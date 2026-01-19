@@ -17,10 +17,10 @@ export {
   userRelations,
   sessionRelations,
   accountRelations,
-} from "./auth-schema";
+} from "./auth-schema.js";
 
 // Import auth tables for relations
-import { user } from "./auth-schema";
+import { user } from "./auth-schema.js";
 
 // Categories
 export const categories = pgTable("categories", {

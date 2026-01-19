@@ -1,5 +1,5 @@
-import { db } from "../db/connection";
-import { orders, orderItems } from "../db/schema";
+import { db } from "../db/connection.js";
+import { orders, orderItems } from "../db/schema.js";
 import { eq, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import {
@@ -7,7 +7,7 @@ import {
   logSuccess,
   logError,
   logDatabase,
-} from "../middleware/logger";
+} from "../middleware/logger.js";
 
 export async function getOrders(userId?: string) {
   logInfo("Fetching orders", { userId });

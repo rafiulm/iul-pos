@@ -1,7 +1,7 @@
-import { db } from "./connection";
-import { products, categories } from "./schema";
+import { db } from "./connection.js";
+import { products, categories } from "./schema.js";
 import { randomUUID } from "crypto";
-import { logInfo, logSuccess, logError } from "../middleware/logger";
+import { logInfo, logSuccess, logError } from "../middleware/logger.js";
 
 // Real categories for Indonesian retail/food business
 const categoryNames = [

@@ -1,4 +1,55 @@
 services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:5001}
+        VITE_FRONTEND_URL: ${VITE_FRONTEND_URL:-http://localhost:5173}
+    container_name: iul-pos-frontend
+    ports:
+      - "3000:80"
+    environment:
+      # Runtime env vars (for container restart without rebuild)
+      VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:5001}
+      VITE_FRONTEND_URL: ${VITE_FRONTEND_URL:-http://localhost:5173}
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: iul-pos-backend
+    ports:
+      - "5001:5001"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 5001
+      BACKEND_URL: ${BACKEND_URL:-http://localhost:5001}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/iulpos
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-supersecretkey_change_in_production}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+    depends_on:
+      postgres:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          \"http://localhost:5001/api/health\",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
   postgres:
     image: postgres:16-alpine
     container_name: iul-pos-db

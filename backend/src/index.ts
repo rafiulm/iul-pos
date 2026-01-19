@@ -5,10 +5,10 @@ import express from "express";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 
-import { auth } from "./auth/auth";
-import routes from "./routes";
-import { errorHandler } from "./middleware/error";
-import { logger, logInfo, logSuccess } from "./middleware/logger";
+import { auth } from "./auth/auth.js";
+import routes from "./routes/index.js";
+import { errorHandler } from "./middleware/error.js";
+import { logger, logInfo, logSuccess } from "./middleware/logger.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5174",
     credentials: true,
-  })
+  }),
 );
 
 logInfo("CORS configured", {

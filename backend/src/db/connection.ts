@@ -2,8 +2,8 @@ import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 
-import * as schema from "./schema";
-import { logInfo, logError, logSuccess } from "../middleware/logger";
+import * as schema from "./schema.js";
+import { logInfo, logError, logSuccess } from "../middleware/logger.js";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set");

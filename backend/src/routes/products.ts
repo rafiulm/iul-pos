@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { z } from 'zod';
-import * as productController from '../controllers/product.controller';
-import { requireAuth } from '../middleware/auth';
+import { Router } from "express";
+import { z } from "zod";
+import * as productController from "../controllers/product.controller.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -15,12 +15,12 @@ const productSchema = z.object({
 });
 
 // Get all products with optional filtering
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const { category, search } = req.query;
     const products = await productController.getProducts(
       category as string | undefined,
-      search as string | undefined
+      search as string | undefined,
     );
     res.json(products);
   } catch (error) {
@@ -29,11 +29,13 @@ router.get('/', async (req, res, next) => {
 });
 
 // Get product by ID
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    const product = await productController.getProductById(req.params.id as string);
+    const product = await productController.getProductById(
+      req.params.id as string,
+    );
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
     res.json(product);
   } catch (error) {
@@ -42,7 +44,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Create new product (auth required)
-router.post('/', requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, async (req, res, next) => {
   try {
     const data = productSchema.parse(req.body);
     const product = await productController.createProduct(data);
@@ -56,15 +58,18 @@ router.post('/', requireAuth, async (req, res, next) => {
 });
 
 // Update product (auth required)
-router.put('/:id', requireAuth, async (req, res, next) => {
+router.put("/:id", requireAuth, async (req, res, next) => {
   try {
     const data = productSchema.partial().safeParse(req.body);
     if (!data.success) {
       return res.status(400).json({ error: data.error.errors });
     }
-    const product = await productController.updateProduct(req.params.id as string, data.data);
+    const product = await productController.updateProduct(
+      req.params.id as string,
+      data.data,
+    );
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
     res.json(product);
   } catch (error) {
@@ -76,13 +81,15 @@ router.put('/:id', requireAuth, async (req, res, next) => {
 });
 
 // Delete product (auth required)
-router.delete('/:id', requireAuth, async (req, res, next) => {
+router.delete("/:id", requireAuth, async (req, res, next) => {
   try {
-    const product = await productController.deleteProduct(req.params.id as string);
+    const product = await productController.deleteProduct(
+      req.params.id as string,
+    );
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ error: "Product not found" });
     }
-    res.json({ message: 'Product deleted successfully' });
+    res.json({ message: "Product deleted successfully" });
   } catch (error) {
     next(error);
   }
